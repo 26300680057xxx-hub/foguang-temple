@@ -1,0 +1,1 @@
+# foguang-temple
