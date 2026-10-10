@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#EFE7D6">
+  <meta name="description" content="自由探索佛光寺东大殿：环绕古建、走入殿内，逐层认识柱网、铺作、梁架与彩塑。">
+  <title>佛光寺 · 唐构之美｜自由探索</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#chapter-1"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 20h34M11 16h26M15 12h18M4 25h40M11 25v13m26-13v13M8 39h32M19 29h10M24 10v28"/></svg><span>佛光寺<small>唐构之美</small></span></a>
+    <nav aria-label="章节导航"><a class="active" href="#chapter-1">首页</a><a href="#chapter-2">整体</a><a href="#chapter-3">结构</a><a href="#chapter-4">细节</a><a href="#chapter-5">价值</a><a href="#chapter-6">回望</a></nav>
+    <button class="header-action" id="toggle-help">操作指南 <span>↗</span></button>
+  </header>
+
+  <div id="scene" aria-label="佛光寺东大殿三维场景，可拖动环绕、滚轮缩放"></div>
+  <div class="scene-tag"><i></i><span id="view-label">东大殿 · 整体环绕</span></div>
+  <button class="expand-scene" id="expand-scene" title="展开三维视野" aria-label="展开三维视野">⛶</button>
+
+  <main id="chapters">
+    <section class="chapter" id="chapter-1" data-chapter="0"><div class="chapter-content">
+      <p class="eyebrow"><span>山西 · 五台</span><i></i>佛光寺东大殿</p>
+      <h1>看见<br><span>唐代木构</span></h1>
+      <p class="description">走近一座殿堂，<br>从一根柱、一重檐，读懂木构之美。</p>
+      <div class="chapter-actions"><button class="button primary" data-action="explore">进入探索 <span>→</span></button></div>
+      <div class="facts"><span>唐大中十一年</span><b>857</b><span>一座仍可走近的唐代殿堂</span></div>
+      <a class="scroll-hint" href="#chapter-2">向下探索 <span>↓</span></a>
+    </div></section>
+    <section class="chapter" id="chapter-2" data-chapter="1"><div class="chapter-content">
+      <p class="eyebrow">02 / 整体之美</p><h2>一座殿堂，<br><span>展开唐风</span></h2>
+      <p class="description">宽阔的屋顶、深远的出檐与七开间立面，共同形成东大殿的庄重气度。</p>
+      <div class="feature-list"><button data-view="front"><span>01</span><b>七开间立面</b><i>↗</i></button><button data-view="roof"><span>02</span><b>单檐庑殿顶</b><i>↗</i></button><button data-view="side"><span>03</span><b>深远出檐</b><i>↗</i></button></div>
+      <p class="side-note">拖动画面，让不同侧面的轮廓慢慢展开。</p>
+    </div></section>
+    <section class="chapter" id="chapter-3" data-chapter="2"><div class="chapter-content">
+      <p class="eyebrow">03 / 木构层次</p><h2>从柱网，<br><span>到屋顶</span></h2>
+      <p class="description">柱网、铺作与梁架彼此衔接，<br>层层承托，组织殿堂的空间。</p>
+      <div class="structure-steps"><button data-layer-view="columns"><small>基础</small><b>柱网与台基</b><span>01</span></button><button data-layer-view="brackets"><small>衔接</small><b>铺作层</b><span>02</span></button><button data-layer-view="frame"><small>上部</small><b>梁架与椽檩</b><span>03</span></button></div>
+      <button class="button secondary" data-action="structure">展开木构 <span>↗</span></button>
+    </div></section>
+    <section class="chapter" id="chapter-4" data-chapter="3"><div class="chapter-content">
+      <p class="eyebrow">04 / 斗拱之美</p><h2>层层出挑，<br><span>托起深檐</span></h2>
+      <p class="description">斗、栱与昂交错叠置，<br>在柱与檐之间，形成清晰的层次。</p>
+      <div class="detail-label"><span>外檐柱头铺作</span><b>双杪双下昂七铺作</b><p>环绕近看，也可选择一件木构，了解它在整体中的位置。</p></div>
+      <div class="chapter-actions"><button class="button primary" data-action="bracket">近看斗拱 <span>→</span></button><button class="text-button" data-action="pick">选择构件 ↗</button></div>
+    </div></section>
+    <section class="chapter" id="chapter-5" data-chapter="4"><div class="chapter-content">
+      <p class="eyebrow">05 / 建筑与艺术</p><h2>建筑之内，<br><span>艺术相融</span></h2>
+      <p class="description">走过殿门，抬头看梁架，<br>在彩塑与木构之间，感受殿内空间。</p>
+      <div class="values"><span>木构</span><i>·</i><span>彩塑</span><i>·</i><span>空间</span></div>
+      <div class="chapter-actions"><button class="button primary" data-action="interior">走入殿内 <span>→</span></button></div>
+      <p class="side-note">走近细节，在同一座建筑里自由探索。</p>
+    </div></section>
+    <section class="chapter" id="chapter-6" data-chapter="5"><div class="chapter-content">
+      <p class="eyebrow">06 / 回望佛光寺</p><h2>让古建，<br><span>被更多人看见</span></h2>
+      <p class="description">从整体到细节，认识木构，<br>也理解保护的意义。</p>
+      <div class="chapter-actions"><button class="button primary" data-action="reset">回顾探索 <span>↗</span></button><button class="text-button" data-action="structure">查看木构层次 →</button></div>
+      <footer class="page-footer"><b>佛光寺 · 唐构之美</b><span>古建科普展示</span><p>依据资料与提供模型制作的科普展示。<br>部分尺度与位置为展示配准。</p></footer>
+    </div></section>
+  </main>
+
+  <aside class="tools" aria-label="探索工具">
+    <div class="tools-title"><span>探索此刻</span><button id="collapse-tools" aria-expanded="true" aria-label="收起探索工具">−</button></div>
+    <div id="tools-body">
+      <div class="mode-switch"><button id="orbit-mode" class="selected" aria-pressed="true">环绕观察</button><button id="walk-mode" aria-pressed="false">自由漫游</button></div>
+      <div class="quick-views"><button data-view="home">全貌</button><button data-action="interior">殿内</button><button data-action="bracket">斗拱</button><button data-view="roof">屋顶</button></div>
+      <p class="tools-subtitle">显隐 · 逐层认识</p>
+      <div class="layer-switches"><label><input type="checkbox" data-layer="roof" checked><span>屋顶瓦面</span></label><label><input type="checkbox" data-layer="enclosure" checked><span>墙壁与门窗</span></label><label><input type="checkbox" data-layer="columns" checked><span>柱网与台基</span></label><label><input type="checkbox" data-layer="brackets" checked><span>斗拱与铺作</span></label><label><input type="checkbox" data-layer="frame" checked><span>梁架与椽檩</span></label><label><input type="checkbox" data-layer="buddha" checked><span>殿内彩塑</span></label></div>
+      <label class="door-toggle"><span>殿门</span><button id="door-toggle" role="switch" aria-checked="false"><i></i></button><small id="door-label">闭合</small></label>
+      <div class="tool-bottom"><button id="reset-view">↺ 重置</button><button id="pick-toggle" aria-pressed="false">⊙ 选构件</button><button id="fullscreen" aria-label="全屏展示">⛶</button></div>
+    </div>
+  </aside>
+
+  <div class="bottom-status"><div class="chapter-counter"><span id="chapter-number">01</span><i>/ 06</i><div id="progress-segments"><b class="active"></b><b></b><b></b><b></b><b></b><b></b></div></div><p id="gesture-hint">拖动环绕 · 滚轮缩放 · 右键平移</p><button id="next-chapter">下一章 ↓</button></div>
+  <div id="walk-pad" hidden aria-label="漫游移动"><button data-move="forward" aria-label="向前">↑</button><div><button data-move="left" aria-label="向左">←</button><button data-move="back" aria-label="向后">↓</button><button data-move="right" aria-label="向右">→</button></div></div>
+  <section id="part-card" hidden><button id="close-part" aria-label="关闭构件信息">×</button><small>此刻所见</small><h3 id="part-title"></h3><p id="part-description"></p><button class="text-button" id="focus-part">移近观察 →</button></section>
+  <div id="loading" role="status" aria-live="polite"><div class="loading-stamp">佛<br>光</div><h3>一座唐构，正在展开</h3><p id="loading-text">正在载入殿堂与彩塑…</p><div class="loading-track"><i id="loading-fill"></i></div><small>首次载入需等待，之后即可自由探索。</small></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="help"><button class="dialog-close" id="close-help" aria-label="关闭说明">×</button><p class="eyebrow">走近唐构</p><h2>用自己的视角，<br>读一座殿堂。</h2><dl><dt>环绕观察</dt><dd>按住左键或单指拖动旋转，滚轮或双指缩放，右键拖动平移。</dd><dt>自由漫游</dt><dd>拖动画面转头，W / A / S / D 或方向键行走，Q / E 升降，Shift 加速。触屏可使用方向按钮。</dd><dt>逐层探索</dt><dd>右侧工具控制各层显隐；打开殿门、走进殿内，或去掉瓦面看梁架。</dd><dt>认识构件</dt><dd>开启“选构件”后点击木构，再用“移近观察”靠近；关闭选择后继续环绕。</dd></dl><button class="button primary" id="help-done">开始探索 →</button></dialog>
+  <noscript><p class="no-js">请启用 JavaScript 查看三维殿堂。</p></noscript>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

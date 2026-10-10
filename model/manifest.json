@@ -1,0 +1,82 @@
+{
+  "format": "glb-byte-chunks-v1",
+  "bytes": 305309148,
+  "sha256": "cd3b3d9e9732bcaa319f7baa0503319f78531cb3d089c04bb611b74bdd9cb419",
+  "chunks": [
+    {
+      "file": "temple-001.bin",
+      "bytes": 20971520,
+      "sha256": "551d5b00014f2026ff0aa74e4122e7cb61e625199df02773e85eb2ccb57d75f1"
+    },
+    {
+      "file": "temple-002.bin",
+      "bytes": 20971520,
+      "sha256": "0a127b53503470ad4414781aee22f0792747e9380230b3f7a711040597ce3c4c"
+    },
+    {
+      "file": "temple-003.bin",
+      "bytes": 20971520,
+      "sha256": "d4249e39a2861cac41dff5e272187ce4448b6bb996c33c474377dee61c3bb78f"
+    },
+    {
+      "file": "temple-004.bin",
+      "bytes": 20971520,
+      "sha256": "ceb9999246f0149a22f4b83b98c4a52705af094e73eb4c304d6e0250f643c726"
+    },
+    {
+      "file": "temple-005.bin",
+      "bytes": 20971520,
+      "sha256": "e1222093e0a238f3a641b7793c72f308c55987893cd4b5013e9064e639047bc7"
+    },
+    {
+      "file": "temple-006.bin",
+      "bytes": 20971520,
+      "sha256": "4183bcf90690f388b9b1c54d06418ff5ddeda847a7997708a958687986511783"
+    },
+    {
+      "file": "temple-007.bin",
+      "bytes": 20971520,
+      "sha256": "a87c750e30f28f22d1cc99d8f78a6e9c161430ce18cdcc52e15bdcf8698ba64b"
+    },
+    {
+      "file": "temple-008.bin",
+      "bytes": 20971520,
+      "sha256": "4178976bf2dcae4ec099fe839c0037fcfbc662695ad6c1c74b31ea4d01a2f7e4"
+    },
+    {
+      "file": "temple-009.bin",
+      "bytes": 20971520,
+      "sha256": "db5139b34b1d05b926fb7288429b899c555a3553ed021e41ce2d3358205a8b3c"
+    },
+    {
+      "file": "temple-010.bin",
+      "bytes": 20971520,
+      "sha256": "ddecb15e5c215b8d43125151c9eb6fd0aa01b35ecb929dff0d945371fbd3b957"
+    },
+    {
+      "file": "temple-011.bin",
+      "bytes": 20971520,
+      "sha256": "b49cb41db45b6b1ee1fbc9cf3631136d27cb52c5969acd82b3c204e750c82c52"
+    },
+    {
+      "file": "temple-012.bin",
+      "bytes": 20971520,
+      "sha256": "9082f61269523a06e85102d4fa3ed985cd315b35567607128be8068b36742b63"
+    },
+    {
+      "file": "temple-013.bin",
+      "bytes": 20971520,
+      "sha256": "7d686b2473dcbbb636847c0634022e83d7b2a49b4b4003c590f2aaf8a574e41c"
+    },
+    {
+      "file": "temple-014.bin",
+      "bytes": 20971520,
+      "sha256": "8ee421c7de929e743c392173f463ba16eff6d4466dae2a2122b8b2dcab90daec"
+    },
+    {
+      "file": "temple-015.bin",
+      "bytes": 11707868,
+      "sha256": "d05c124f1a53b939a48af7fe77c77ae94e00336f4ddf733b50da113a0bcbdb0e"
+    }
+  ]
+}
