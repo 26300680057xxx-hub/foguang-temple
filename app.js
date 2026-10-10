@@ -99,6 +99,8 @@ function setLayer(layer, visible) {
 }
 
 function loadModel() {
+  loading.classList.remove('loaded');
+  loading.removeAttribute('aria-hidden');
   const loader = new GLTFLoader();
   loadChunkedGltf(loader, new URL('./model/manifest.json', import.meta.url), gltf => {
     model = gltf.scene;
@@ -114,7 +116,7 @@ function loadModel() {
       if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; }
     });
     loadingText.textContent = '殿堂与彩塑已就位'; loadingFill.style.width = '100%';
-    setTimeout(() => loading.classList.add('loaded'), 500);
+    setTimeout(() => { loading.classList.add('loaded'); loading.setAttribute('aria-hidden', 'true'); }, 500);
     requestRender();
   }, xhr => {
     const p = xhr.total ? xhr.loaded / xhr.total * 100 : 0;

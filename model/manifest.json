@@ -1,82 +1,82 @@
 {
   "format": "glb-byte-chunks-v1",
-  "bytes": 305309148,
-  "sha256": "cd3b3d9e9732bcaa319f7baa0503319f78531cb3d089c04bb611b74bdd9cb419",
+  "bytes": 305057612,
+  "sha256": "5305ba2127762eb7fba0da5b98793b4621cbb93fd583c8ff5a37bb3a6e499d41",
   "chunks": [
     {
       "file": "temple-001.bin",
       "bytes": 20971520,
-      "sha256": "551d5b00014f2026ff0aa74e4122e7cb61e625199df02773e85eb2ccb57d75f1"
+      "sha256": "d26c2b0bcd886f8857afa723247028b2094703cab81504687eb39fc8cadcccf6"
     },
     {
       "file": "temple-002.bin",
       "bytes": 20971520,
-      "sha256": "0a127b53503470ad4414781aee22f0792747e9380230b3f7a711040597ce3c4c"
+      "sha256": "7ba6aa5241b6789734175da9ccd61a94b002127c667341712f9fa2370a4419a4"
     },
     {
       "file": "temple-003.bin",
       "bytes": 20971520,
-      "sha256": "d4249e39a2861cac41dff5e272187ce4448b6bb996c33c474377dee61c3bb78f"
+      "sha256": "783c515d36bc770a7626b2ffdfa53ead81d12abaa7b3bc9684c69bb8c623296d"
     },
     {
       "file": "temple-004.bin",
       "bytes": 20971520,
-      "sha256": "ceb9999246f0149a22f4b83b98c4a52705af094e73eb4c304d6e0250f643c726"
+      "sha256": "088c6db4c79b8bbb985917a043777f191b3ee4d97dcc2d5610a4fa31acb19bf3"
     },
     {
       "file": "temple-005.bin",
       "bytes": 20971520,
-      "sha256": "e1222093e0a238f3a641b7793c72f308c55987893cd4b5013e9064e639047bc7"
+      "sha256": "e1adf7b54212ca4998385f33886cf2f1abdeb271ead5e17bdca1c2ad39724ba3"
     },
     {
       "file": "temple-006.bin",
       "bytes": 20971520,
-      "sha256": "4183bcf90690f388b9b1c54d06418ff5ddeda847a7997708a958687986511783"
+      "sha256": "d758c7dcd8c9cdc8f51af45acec27993078cf83cf7993723c46d10ec8402c5bd"
     },
     {
       "file": "temple-007.bin",
       "bytes": 20971520,
-      "sha256": "a87c750e30f28f22d1cc99d8f78a6e9c161430ce18cdcc52e15bdcf8698ba64b"
+      "sha256": "e28da34f2ed79e49db499ca8cfc34f2fb78ddfe769e43a8b51df5c5f5d6307dc"
     },
     {
       "file": "temple-008.bin",
       "bytes": 20971520,
-      "sha256": "4178976bf2dcae4ec099fe839c0037fcfbc662695ad6c1c74b31ea4d01a2f7e4"
+      "sha256": "f002dfbce6d4300f6c8cf2206ead823c54e6066036d352e4e36c4995379a8b3d"
     },
     {
       "file": "temple-009.bin",
       "bytes": 20971520,
-      "sha256": "db5139b34b1d05b926fb7288429b899c555a3553ed021e41ce2d3358205a8b3c"
+      "sha256": "7aadd39ffa0a6445d3920809c27f13a8a3940bfde73de2183a504f9866efe5b2"
     },
     {
       "file": "temple-010.bin",
       "bytes": 20971520,
-      "sha256": "ddecb15e5c215b8d43125151c9eb6fd0aa01b35ecb929dff0d945371fbd3b957"
+      "sha256": "a9277a54e2ad29375d2adcf55d86ff6eb73394c73de78f3370716705537f9853"
     },
     {
       "file": "temple-011.bin",
       "bytes": 20971520,
-      "sha256": "b49cb41db45b6b1ee1fbc9cf3631136d27cb52c5969acd82b3c204e750c82c52"
+      "sha256": "76ae52c74f20e09b02bc95c64c9a9e05839ebfbfa26461560f9ae270fff46b1c"
     },
     {
       "file": "temple-012.bin",
       "bytes": 20971520,
-      "sha256": "9082f61269523a06e85102d4fa3ed985cd315b35567607128be8068b36742b63"
+      "sha256": "883d6aed18c057d64f3c1b763ccf4c322b2cdb2a501c3a59b75978db26295530"
     },
     {
       "file": "temple-013.bin",
       "bytes": 20971520,
-      "sha256": "7d686b2473dcbbb636847c0634022e83d7b2a49b4b4003c590f2aaf8a574e41c"
+      "sha256": "7753f8bb5bf7d114e080907a3b61749cc7e2fc65bd45837b8d25aa1cc4b03388"
     },
     {
       "file": "temple-014.bin",
       "bytes": 20971520,
-      "sha256": "8ee421c7de929e743c392173f463ba16eff6d4466dae2a2122b8b2dcab90daec"
+      "sha256": "7ee64c0e64f0f2e19c91de9d5a768a2f91bf3a0307b50d6335895ab408758a1d"
     },
     {
       "file": "temple-015.bin",
-      "bytes": 11707868,
-      "sha256": "d05c124f1a53b939a48af7fe77c77ae94e00336f4ddf733b50da113a0bcbdb0e"
+      "bytes": 11456332,
+      "sha256": "83073997141b4ac081604406fa3fa1b3effb00d93f689aa9a590ef593a2b9b52"
     }
   ]
 }
