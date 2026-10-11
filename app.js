@@ -2,6 +2,8 @@ import { loadChunkedGltf } from './chunked-model-loader.js';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { batchStaticMeshes } from './static-batches.js';
+import { MeshoptDecoder } from './vendor/meshopt_decoder.js';
 
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -13,12 +15,14 @@ const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 500);
 camera.position.set(44, 31, 61);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
 const compactDevice = matchMedia('(max-width: 720px)').matches;
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactDevice ? 1.5 : 2));
+const mobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && matchMedia('(pointer: coarse)').matches);
+let smoothQuality = mobileDevice || compactDevice;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smoothQuality ? 1 : 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.08;
 renderer.setClearColor(0x000000, 0);
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = !smoothQuality;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // The architecture is static: reuse its shadow map while orbiting.
 renderer.shadowMap.autoUpdate = false;
@@ -95,6 +99,7 @@ let model = null;
 let pickMode = false;
 let selected = null;
 let selectedMaterial = null;
+let selectedOverlay = null;
 let frameRequested = true;
 let mode = 'orbit';
 let chapter = 0;
@@ -160,7 +165,8 @@ function loadModel() {
   loading.classList.remove('loaded');
   loading.removeAttribute('aria-hidden');
   const loader = new GLTFLoader();
-  loadChunkedGltf(loader, new URL('./model/manifest.json', import.meta.url), gltf => {
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  loadChunkedGltf(loader, new URL(mobileDevice ? './model/mobile/manifest.json' : './model/manifest.json', import.meta.url), async gltf => {
     model = gltf.scene;
     model.name = '佛光寺东大殿 · 可探索模型';
     scene.add(model);
@@ -184,6 +190,21 @@ function loadModel() {
         });
       }
     });
+    let batching = null;
+    if (mobileDevice || compactDevice) {
+      loadingText.textContent = '正在准备流畅展示…';
+      batching = await batchStaticMeshes(model);
+      model.userData.renderBatching = batching;
+      // Static local matrices never change; moving hinges are kept dynamic.
+      const hinges = new Set(doorParts.map(d => d.object));
+      model.traverse(o => { if (!hinges.has(o)) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
+      model.updateMatrixWorld(true);
+      model.traverse(o => {
+        let moving = false;
+        for (let p = o; p && p !== model; p = p.parent) if (hinges.has(p)) { moving = true; break; }
+        o.matrixWorldAutoUpdate = moving;
+      });
+    }
     const bounds = new THREE.Box3().setFromObject(model);
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
@@ -218,9 +239,12 @@ $$('[data-lighting]').forEach(button => button.addEventListener('click', () => {
   document.body.dataset.lighting = button.dataset.lighting;
   requestRender();
 }));
+$('#render-quality').value = smoothQuality ? 'smooth' : 'fine';
 $('#render-quality').addEventListener('change', e => {
+  smoothQuality = e.target.value === 'smooth';
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, e.target.value === 'fine' ? 2 : 1));
-  fitRenderer();
+  renderer.shadowMap.enabled = !smoothQuality;
+  updateShadows(); fitRenderer();
 });
 
 function view(position, target, label) {
@@ -278,6 +302,7 @@ function animateDoor(open) {
 $('#door-toggle').addEventListener('click', () => animateDoor(!doorOpen));
 
 function selectObject(obj) {
+  if (selectedOverlay) { selectedOverlay.removeFromParent(); selectedOverlay = null; }
   if (selected && selectedMaterial) { const mats = Array.isArray(selected.material) ? selected.material : [selected.material]; mats.forEach(m => m.dispose()); selected.material = selectedMaterial; selectedMaterial = null; }
   selected = obj;
   if (!obj) { $('#part-card').hidden = true; requestRender(); return; }
@@ -285,6 +310,12 @@ function selectObject(obj) {
     selectedMaterial = obj.material; obj.material = Array.isArray(obj.material) ? obj.material.map(m => m.clone()) : obj.material.clone();
     const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
     mats.forEach(m => { if (m.emissive) { m.emissive.set('#A34535'); m.emissiveIntensity = .65; } else if (m.color) m.color.offsetHSL(0, .05, .12); });
+    if (obj.userData.staticBatched) {
+      mats.forEach(m => { m.polygonOffset = true; m.polygonOffsetFactor = -1; m.polygonOffsetUnits = -1; });
+      selectedOverlay = new THREE.Mesh(obj.geometry, obj.material);
+      selectedOverlay.matrix.copy(obj.matrix); selectedOverlay.matrixAutoUpdate = false;
+      selectedOverlay.raycast = () => {}; obj.parent.add(selectedOverlay);
+    }
   }
   let label = obj.name || '木构构件';
   const names = [['column','柱网构件'],['puzuo','铺作层构件'],['bracket','斗拱构件'],['beam','梁架构件'],['rafter','椽檩构件'],['tile','屋面瓦件'],['buddha','殿内彩塑'],['door','殿门构件']];
@@ -376,6 +407,7 @@ const help = $('#help'); $('#toggle-help').addEventListener('click', () => help.
 
 let last = performance.now();
 function renderLoop(now) {
+  if (document.hidden) { last = now; requestAnimationFrame(renderLoop); return; }
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   let active = tickFocus() || updateWalk(dt);
   let doorsMoving = false;
