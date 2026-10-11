@@ -7,33 +7,89 @@ const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const sceneHost = $('#scene');
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#EFE7D6');
+// The transparent canvas lets the exhibition backdrop continue behind the model.
+scene.background = null;
 const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 500);
-camera.position.set(40, 29, 56);
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+camera.position.set(44, 31, 61);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+const compactDevice = matchMedia('(max-width: 720px)').matches;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactDevice ? 1.5 : 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.08;
+renderer.setClearColor(0x000000, 0);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// The architecture is static: reuse its shadow map while orbiting.
+renderer.shadowMap.autoUpdate = false;
 sceneHost.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = .07;
 controls.target.set(0, 6.5, 0);
 controls.minDistance = 2;
-controls.maxDistance = 150;
+controls.maxDistance = 250;
 controls.maxPolarAngle = Math.PI * .49;
 
-scene.add(new THREE.HemisphereLight(0xfff4dd, 0x5e4d3b, 1.7));
-const key = new THREE.DirectionalLight(0xffe4ba, 2.1);
-key.position.set(-35, 55, 40);
+const skyLight = new THREE.HemisphereLight(0xfff7e8, 0x847568, 1.35);
+scene.add(skyLight);
+const key = new THREE.DirectionalLight(0xffeed7, 2.6);
+key.position.set(-30, 45, 28);
+key.target.position.set(0, 6, 0);
+key.castShadow = true;
+key.shadow.mapSize.set(compactDevice ? 2048 : 4096, compactDevice ? 2048 : 4096);
+Object.assign(key.shadow.camera, { left: -34, right: 34, top: 30, bottom: -30, near: 1, far: 130 });
+key.shadow.bias = -.00015;
+key.shadow.normalBias = .035;
+key.shadow.camera.updateProjectionMatrix();
 scene.add(key);
-const fill = new THREE.DirectionalLight(0xaec8d2, .7);
+scene.add(key.target);
+const fill = new THREE.DirectionalLight(0xd9e5ee, .9);
 fill.position.set(35, 24, -25);
 scene.add(fill);
-const interior = new THREE.PointLight(0xffc985, .8, 32);
-interior.position.set(0, 5, -3);
+const rim = new THREE.DirectionalLight(0xffe3b5, 1.15);
+rim.position.set(12, 24, -30);
+scene.add(rim);
+const interior = new THREE.PointLight(0xffe0b3, 28, 24, 2);
+interior.position.set(0, 5.5, 2);
 scene.add(interior);
+
+// A local studio environment gives rough wood and stone soft reflected light.
+// It requires no remote HDR image and never replaces the supplied textures.
+const studio = new THREE.Scene();
+studio.background = new THREE.Color(0x9b9487);
+const studioBox = new THREE.Mesh(new THREE.BoxGeometry(100, 80, 100), new THREE.MeshBasicMaterial({ color: 0xc7c1b4, side: THREE.BackSide }));
+studio.add(studioBox);
+const softboxes = [
+  [[-20, 30, 15], [35, 25, 1], 0xfff4de, 3],
+  [[30, 15, -20], [22, 35, 1], 0xd9e5ef, 1.5]
+];
+softboxes.forEach(([position, scale, color, intensity]) => {
+  const panel = new THREE.Mesh(new THREE.PlaneGeometry(), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(intensity), side: THREE.DoubleSide }));
+  panel.position.set(...position); panel.scale.set(...scale); panel.lookAt(0, 0, 0); studio.add(panel);
+});
+const pmrem = new THREE.PMREMGenerator(renderer);
+const environment = pmrem.fromScene(studio, .08, .1, 150);
+scene.environment = environment.texture;
+scene.environmentIntensity = .32;
+studio.traverse(o => { if (o.isMesh) { o.geometry.dispose(); o.material.dispose(); } });
+pmrem.dispose();
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.ShadowMaterial({ color: 0x453b2e, opacity: .22 }));
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+const contactCanvas = document.createElement('canvas');
+contactCanvas.width = contactCanvas.height = 128;
+const contactContext = contactCanvas.getContext('2d');
+const contactGradient = contactContext.createRadialGradient(64, 64, 18, 64, 64, 64);
+contactGradient.addColorStop(0, 'rgba(61,49,34,0.20)');
+contactGradient.addColorStop(.65, 'rgba(61,49,34,0.10)');
+contactGradient.addColorStop(1, 'rgba(61,49,34,0)');
+contactContext.fillStyle = contactGradient; contactContext.fillRect(0, 0, 128, 128);
+const contact = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(contactCanvas), transparent: true, depthWrite: false, toneMapped: false }));
+contact.rotation.x = -Math.PI / 2;
+scene.add(contact);
 
 let model = null;
 let pickMode = false;
@@ -55,16 +111,18 @@ const loadingFill = $('#loading-fill');
 const toast = $('#toast');
 function showToast(message) {
   toast.textContent = message;
-  toast.classList.add('show');
+  toast.classList.add('visible');
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2400);
+  showToast.timer = setTimeout(() => toast.classList.remove('visible'), 2400);
 }
 function requestRender() { frameRequested = true; }
+function updateShadows() { renderer.shadowMap.needsUpdate = true; requestRender(); }
 function fitRenderer() {
   const w = sceneHost.clientWidth || innerWidth, h = sceneHost.clientHeight || innerHeight;
   camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false); requestRender();
 }
 addEventListener('resize', fitRenderer); fitRenderer();
+camera.position.sub(controls.target).multiplyScalar(Math.max(1, 1.05 / camera.aspect)).add(controls.target);
 controls.addEventListener('change', requestRender);
 controls.addEventListener('start', () => { focus.t = 1; });
 
@@ -77,7 +135,7 @@ function allNamed(name) {
 }
 function findLayer(layer) {
   const terms = {
-    roof: ['FGS_AI_ExteriorRoof_ROOT','FGS_Roof_Details_ROOT','FGS_LJ_Tiles_','FGS_LJ_RidgeTiles_','FGS_LJ_Boards_'],
+    roof: ['FGS_RealTiles_','FGS_AI_ExteriorRoof_ROOT','FGS_Roof_Details_ROOT','FGS_LJ_Tiles_','FGS_LJ_RidgeTiles_','FGS_LJ_Boards_'],
     enclosure: ['FGS_Enclosure_'],
     columns: ['FGS_EastHall_柱网层_ROOT'],
     brackets: ['FGS_PuzuoLayer_'],
@@ -95,7 +153,7 @@ function findLayer(layer) {
 function setLayer(layer, visible) {
   findLayer(layer).forEach(o => { o.visible = visible; });
   if (layer === 'roof') allNamed('FGS_Pingan_').forEach(o => { o.visible = visible; });
-  requestRender();
+  updateShadows();
 }
 
 function loadModel() {
@@ -113,8 +171,26 @@ function loadModel() {
         const axis = new THREE.Vector3(0,1,0).applyQuaternion(parentQ.invert()).normalize();
         doorParts.push({ object: o, base: o.quaternion.clone(), axis, angle: 0, goal: 0, side: o.name.includes('右') || o.name.toLowerCase().includes('right') ? -1 : 1 });
       }
-      if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; }
+      if (o.isMesh) {
+        // Roof boards cast the roof silhouette; thousands of tiny tiles need
+        // not be rendered again in the shadow pass. Transparent photo cutouts
+        // keep their original alpha and do not cast rectangular shadows.
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        const name = o.name || '';
+        o.castShadow = !name.startsWith('FGS_RT_') && !mats.some(m => m.transparent);
+        o.receiveShadow = true;
+        mats.forEach(m => {
+          [m.map, m.normalMap, m.roughnessMap].filter(Boolean).forEach(t => { t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); });
+        });
+      }
     });
+    const bounds = new THREE.Box3().setFromObject(model);
+    const size = bounds.getSize(new THREE.Vector3());
+    const center = bounds.getCenter(new THREE.Vector3());
+    ground.position.set(center.x, bounds.min.y - .035, center.z);
+    contact.position.set(center.x, bounds.min.y - .025, center.z);
+    contact.scale.set(size.x * 1.65, size.z * 1.8, 1);
+    updateShadows();
     loadingText.textContent = '殿堂与彩塑已就位'; loadingFill.style.width = '100%';
     setTimeout(() => { loading.classList.add('loaded'); loading.setAttribute('aria-hidden', 'true'); }, 500);
     requestRender();
@@ -129,6 +205,24 @@ function loadModel() {
 }
 loadModel();
 
+const lightingLooks = {
+  daylight: { sky: 1.35, key: 2.6, fill: .9, rim: 1.15, exposure: 1.08, color: 0xffeed7, environment: .32 },
+  sunset: { sky: 1.1, key: 2.8, fill: .8, rim: 1.5, exposure: 1.05, color: 0xffd2a2, environment: .28 }
+};
+$$('[data-lighting]').forEach(button => button.addEventListener('click', () => {
+  const look = lightingLooks[button.dataset.lighting];
+  skyLight.intensity = look.sky; key.intensity = look.key; key.color.setHex(look.color);
+  fill.intensity = look.fill; rim.intensity = look.rim;
+  renderer.toneMappingExposure = look.exposure; scene.environmentIntensity = look.environment;
+  $$('[data-lighting]').forEach(b => { b.classList.toggle('selected', b === button); b.setAttribute('aria-pressed', String(b === button)); });
+  document.body.dataset.lighting = button.dataset.lighting;
+  requestRender();
+}));
+$('#render-quality').addEventListener('change', e => {
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, e.target.value === 'fine' ? 2 : 1));
+  fitRenderer();
+});
+
 function view(position, target, label) {
   focus.object = null; focus.from = camera.position.clone(); focus.to = new THREE.Vector3(...position);
   focus.targetFrom = controls.target.clone(); focus.targetTo = new THREE.Vector3(...target); focus.t = 0;
@@ -136,14 +230,21 @@ function view(position, target, label) {
 }
 function preset(name) {
   const presets = {
-    home: [[40, 29, 56], [0, 6.5, 0], '东大殿 · 整体环绕'],
+    home: [[44, 31, 61], [0, 6.5, 0], '东大殿 · 整体环绕'],
     front: [[0, 11, 61], [0, 7, 0], '东大殿 · 七开间立面'],
     roof: [[22, 42, 33], [0, 10, 0], '东大殿 · 屋顶俯瞰'],
     side: [[-47, 18, 22], [0, 7, 0], '东大殿 · 深远出檐'],
     bracket: [[-15, 8.5, 16], [-12.5, 7.5, 8.7], '东大殿 · 斗拱近景'],
     interior: [[0, 2.8, 7], [0, 3.3, -3], '东大殿 · 殿内彩塑']
   };
-  const p = presets[name] || presets.home; view(p[0], p[1], p[2]);
+  const p = presets[name] || presets.home;
+  // Pull back the overall views on tall screens so the eaves remain in frame.
+  const position = new THREE.Vector3(...p[0]);
+  const target = new THREE.Vector3(...p[1]);
+  if (!['bracket', 'interior'].includes(name)) {
+    position.sub(target).multiplyScalar(Math.max(1, 1.05 / camera.aspect)).add(target);
+  }
+  view(position.toArray(), p[1], p[2]);
 }
 function tickFocus() {
   if (focus.t >= 1) return false;
@@ -260,6 +361,11 @@ $('#reset-view').addEventListener('click', () => { $$('input[data-layer]').forEa
 $('#expand-scene').addEventListener('click', () => { document.body.classList.toggle('immersive'); fitRenderer(); });
 $('#fullscreen').addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
 $('#collapse-tools').addEventListener('click', e => { const body = $('#tools-body'); const hidden = body.hidden; body.hidden = !hidden; e.currentTarget.textContent = hidden ? '−' : '+'; e.currentTarget.setAttribute('aria-expanded', String(hidden)); });
+if (compactDevice) {
+  $('#tools-body').hidden = true;
+  $('#collapse-tools').textContent = '+';
+  $('#collapse-tools').setAttribute('aria-expanded', 'false');
+}
 
 const chapters = $$('.chapter');
 const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (!entry.isIntersecting) return; const next = Number(entry.target.dataset.chapter) || 0; if (next !== chapter && !document.body.classList.contains('immersive')) preset(['home','front','side','bracket','front','home'][next]); chapter = next; $$('nav a').forEach((a, i) => a.classList.toggle('active', i === chapter)); $('#chapter-number').textContent = String(chapter + 1).padStart(2, '0'); $$('#progress-segments b').forEach((b, i) => b.classList.toggle('active', i === chapter)); }), { threshold: .55 });
@@ -272,7 +378,11 @@ let last = performance.now();
 function renderLoop(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   let active = tickFocus() || updateWalk(dt);
-  doorParts.forEach(d => { if (Math.abs(d.angle - d.goal) > .001) { d.angle = THREE.MathUtils.lerp(d.angle, d.goal, .18); d.object.quaternion.copy(d.base).premultiply(new THREE.Quaternion().setFromAxisAngle(d.axis,d.angle)); active = true; } });
+  let doorsMoving = false;
+  doorParts.forEach(d => { if (Math.abs(d.angle - d.goal) > .001) { d.angle = THREE.MathUtils.lerp(d.angle, d.goal, .18); d.object.quaternion.copy(d.base).premultiply(new THREE.Quaternion().setFromAxisAngle(d.axis,d.angle)); active = true; doorsMoving = true; } });
+  // Refresh once when a door comes to rest, rather than on every animation frame.
+  if (renderLoop.doorsMoving && !doorsMoving) updateShadows();
+  renderLoop.doorsMoving = doorsMoving;
   if (controls.enabled) controls.update();
   if (active || frameRequested) { renderer.render(scene, camera); frameRequested = false; }
   requestAnimationFrame(renderLoop);

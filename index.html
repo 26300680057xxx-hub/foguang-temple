@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#EFE7D6">
+  <meta name="theme-color" content="#F3EDDF">
   <meta name="description" content="自由探索佛光寺东大殿：环绕古建、走入殿内，逐层认识柱网、铺作、梁架与彩塑。">
   <title>佛光寺 · 唐构之美｜自由探索</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -18,6 +18,7 @@
     <button class="header-action" id="toggle-help">操作指南 <span>↗</span></button>
   </header>
 
+  <div class="exhibition-backdrop" aria-hidden="true"><span class="backdrop-calligraphy">唐构</span><span class="backdrop-caption">一座殿堂 · 一场穿越时光的凝望</span></div>
   <div id="scene" aria-label="佛光寺东大殿三维场景，可拖动环绕、滚轮缩放"></div>
   <div class="scene-tag"><i></i><span id="view-label">东大殿 · 整体环绕</span></div>
   <button class="expand-scene" id="expand-scene" title="展开三维视野" aria-label="展开三维视野">⛶</button>
@@ -72,6 +73,7 @@
       <p class="tools-subtitle">显隐 · 逐层认识</p>
       <div class="layer-switches"><label><input type="checkbox" data-layer="roof" checked><span>屋顶瓦面</span></label><label><input type="checkbox" data-layer="enclosure" checked><span>墙壁与门窗</span></label><label><input type="checkbox" data-layer="columns" checked><span>柱网与台基</span></label><label><input type="checkbox" data-layer="brackets" checked><span>斗拱与铺作</span></label><label><input type="checkbox" data-layer="frame" checked><span>梁架与椽檩</span></label><label><input type="checkbox" data-layer="buddha" checked><span>殿内彩塑</span></label></div>
       <label class="door-toggle"><span>殿门</span><button id="door-toggle" role="switch" aria-checked="false"><i></i></button><small id="door-label">闭合</small></label>
+      <div class="lighting-controls"><p class="tools-subtitle">光影 · 观赏氛围</p><div class="lighting-switch"><button data-lighting="daylight" class="selected" aria-pressed="true">清昼</button><button data-lighting="sunset" aria-pressed="false">暖暮</button></div><label class="quality-control" for="render-quality"><span>画面精度</span><select id="render-quality"><option value="fine" selected>精细</option><option value="smooth">流畅</option></select></label></div>
       <div class="tool-bottom"><button id="reset-view">↺ 重置</button><button id="pick-toggle" aria-pressed="false">⊙ 选构件</button><button id="fullscreen" aria-label="全屏展示">⛶</button></div>
     </div>
   </aside>
@@ -79,7 +81,7 @@
   <div class="bottom-status"><div class="chapter-counter"><span id="chapter-number">01</span><i>/ 06</i><div id="progress-segments"><b class="active"></b><b></b><b></b><b></b><b></b><b></b></div></div><p id="gesture-hint">拖动环绕 · 滚轮缩放 · 右键平移</p><button id="next-chapter">下一章 ↓</button></div>
   <div id="walk-pad" hidden aria-label="漫游移动"><button data-move="forward" aria-label="向前">↑</button><div><button data-move="left" aria-label="向左">←</button><button data-move="back" aria-label="向后">↓</button><button data-move="right" aria-label="向右">→</button></div></div>
   <section id="part-card" hidden><button id="close-part" aria-label="关闭构件信息">×</button><small>此刻所见</small><h3 id="part-title"></h3><p id="part-description"></p><button class="text-button" id="focus-part">移近观察 →</button></section>
-  <div id="loading" role="status" aria-live="polite"><div class="loading-stamp">佛<br>光</div><h3>一座唐构，正在展开</h3><p id="loading-text">正在载入殿堂与彩塑…</p><div class="loading-track"><i id="loading-fill"></i></div><small>首次载入需等待，之后即可自由探索。</small></div>
+  <div id="loading" role="status" aria-live="polite"><div class="loading-stamp">佛<br>光</div><h3>一座唐构，正在展开</h3><p id="loading-text">正在载入殿堂与彩塑…</p><div class="loading-track"><i id="loading-fill"></i></div><small>首次载入需等待，之后即可自由探索。</small><span class="loading-edition">佛光寺 · 唐构之美</span></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog id="help"><button class="dialog-close" id="close-help" aria-label="关闭说明">×</button><p class="eyebrow">走近唐构</p><h2>用自己的视角，<br>读一座殿堂。</h2><dl><dt>环绕观察</dt><dd>按住左键或单指拖动旋转，滚轮或双指缩放，右键拖动平移。</dd><dt>自由漫游</dt><dd>拖动画面转头，W / A / S / D 或方向键行走，Q / E 升降，Shift 加速。触屏可使用方向按钮。</dd><dt>逐层探索</dt><dd>右侧工具控制各层显隐；打开殿门、走进殿内，或去掉瓦面看梁架。</dd><dt>认识构件</dt><dd>开启“选构件”后点击木构，再用“移近观察”靠近；关闭选择后继续环绕。</dd></dl><button class="button primary" id="help-done">开始探索 →</button></dialog>
   <noscript><p class="no-js">请启用 JavaScript 查看三维殿堂。</p></noscript>
