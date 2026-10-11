@@ -1,12 +1,12 @@
 {
   "format": "glb-byte-chunks-v1",
   "bytes": 300387024,
-  "sha256": "97bee914302b673cf79f84d8bc89dc185143d1c3fb165c93e492c1cbf2677bde",
+  "sha256": "5e37ef90b9a9b70e840847743d36e1979fa2011c5ec2f531e04d2d7f57551f2c",
   "chunks": [
     {
       "file": "temple-001.bin",
       "bytes": 20971520,
-      "sha256": "bfa4f75b686c8a6f0ce66dc69568ddbb5862896d7f1f9ac789324f5f492a8f76"
+      "sha256": "d54f43ad8ecc4115d2a50bcea29e17a2de35b88c98587c8fa4f21635acd4471d"
     },
     {
       "file": "temple-002.bin",
