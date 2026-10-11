@@ -15,7 +15,7 @@
   <header class="site-header">
     <a class="brand" href="#chapter-1"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 20h34M11 16h26M15 12h18M4 25h40M11 25v13m26-13v13M8 39h32M19 29h10M24 10v28"/></svg><span>佛光寺<small>唐构之美</small></span></a>
     <nav aria-label="章节导航"><a class="active" href="#chapter-1">首页</a><a href="#chapter-2">整体</a><a href="#chapter-3">结构</a><a href="#chapter-4">细节</a><a href="#chapter-5">价值</a><a href="#chapter-6">回望</a></nav>
-    <button class="header-action" id="toggle-help">操作指南 <span>↗</span></button>
+    <div class="header-actions"><button class="music-toggle" id="music-toggle" aria-pressed="false" aria-label="播放古风配乐：唐构清韵" title="播放古风配乐：唐构清韵"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15V6l10-2v9M5 8l10-2"/><ellipse cx="3.5" cy="15" rx="2.5" ry="1.7"/><ellipse cx="13.5" cy="13" rx="2.5" ry="1.7"/></svg><span id="music-label">听唐韵</span><i aria-hidden="true"></i></button><button class="header-action" id="toggle-help">操作指南 <span>↗</span></button></div>
   </header>
 
   <div class="exhibition-backdrop" aria-hidden="true"><span class="backdrop-calligraphy">唐构</span><span class="backdrop-caption">一座殿堂 · 一场穿越时光的凝望</span></div>
@@ -74,6 +74,7 @@
       <div class="layer-switches"><label><input type="checkbox" data-layer="roof" checked><span>屋顶瓦面</span></label><label><input type="checkbox" data-layer="enclosure" checked><span>墙壁与门窗</span></label><label><input type="checkbox" data-layer="columns" checked><span>柱网与台基</span></label><label><input type="checkbox" data-layer="brackets" checked><span>斗拱与铺作</span></label><label><input type="checkbox" data-layer="frame" checked><span>梁架与椽檩</span></label><label><input type="checkbox" data-layer="buddha" checked><span>殿内彩塑</span></label></div>
       <label class="door-toggle"><span>殿门</span><button id="door-toggle" role="switch" aria-checked="false"><i></i></button><small id="door-label">闭合</small></label>
       <div class="lighting-controls"><p class="tools-subtitle">光影 · 观赏氛围</p><div class="lighting-switch"><button data-lighting="daylight" class="selected" aria-pressed="true">清昼</button><button data-lighting="sunset" aria-pressed="false">暖暮</button></div><label class="quality-control" for="render-quality"><span>画面精度</span><select id="render-quality"><option value="fine" selected>精细</option><option value="smooth">流畅</option></select></label></div>
+      <div class="music-controls"><p class="tools-subtitle">听觉 · 唐构清韵</p><p id="music-status" role="status" aria-live="polite">点击顶部「听唐韵」开启</p><label class="music-volume" for="music-volume"><span>音量</span><input id="music-volume" type="range" min="0" max="100" value="28" aria-label="配乐音量"><output id="music-volume-value" for="music-volume">28%</output></label><small>拨弦与笛音 · 原创器乐</small></div>
       <div class="tool-bottom"><button id="reset-view">↺ 重置</button><button id="pick-toggle" aria-pressed="false">⊙ 选构件</button><button id="fullscreen" aria-label="全屏展示">⛶</button></div>
     </div>
   </aside>
@@ -85,6 +86,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog id="help"><button class="dialog-close" id="close-help" aria-label="关闭说明">×</button><p class="eyebrow">走近唐构</p><h2>用自己的视角，<br>读一座殿堂。</h2><dl><dt>环绕观察</dt><dd>按住左键或单指拖动旋转，滚轮或双指缩放，右键拖动平移。</dd><dt>自由漫游</dt><dd>拖动画面转头，W / A / S / D 或方向键行走，Q / E 升降，Shift 加速。触屏可使用方向按钮。</dd><dt>逐层探索</dt><dd>右侧工具控制各层显隐；打开殿门、走进殿内，或去掉瓦面看梁架。</dd><dt>认识构件</dt><dd>开启“选构件”后点击木构，再用“移近观察”靠近；关闭选择后继续环绕。</dd></dl><button class="button primary" id="help-done">开始探索 →</button></dialog>
   <noscript><p class="no-js">请启用 JavaScript 查看三维殿堂。</p></noscript>
+  <audio id="temple-music" loop preload="none" aria-label="唐构清韵古风配乐"></audio>
+  <script type="module" src="./music.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
