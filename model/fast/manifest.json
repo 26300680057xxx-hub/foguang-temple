@@ -1,0 +1,65 @@
+{
+  "format": "glb-byte-chunks-v1",
+  "bytes": 23037677,
+  "sha256": "0094bd9184fd5b83f29b8dd319d3abd1c247c88914e20700680c0f1a33208625",
+  "chunks": [
+    {
+      "file": "temple-001-858a3a09966c.bin",
+      "bytes": 2097152,
+      "sha256": "858a3a09966cd95fbea0b649a0ebd01dee8a3c623610321c64cf82cd3a2c8650"
+    },
+    {
+      "file": "temple-002-3260e7f196f5.bin",
+      "bytes": 2097152,
+      "sha256": "3260e7f196f5075e0bf4e221aec56a2f0636cccc784960caa4e03b1e6034743f"
+    },
+    {
+      "file": "temple-003-60eb4680e1e6.bin",
+      "bytes": 2097152,
+      "sha256": "60eb4680e1e637ae742cafc1419437338c0492f2da2ff384364a09dc6760d8ab"
+    },
+    {
+      "file": "temple-004-83d36983d8fe.bin",
+      "bytes": 2097152,
+      "sha256": "83d36983d8fe0ddc7fd8a0e418ebb26d324466754b6a9ca60da277fb9139c501"
+    },
+    {
+      "file": "temple-005-49f947170fae.bin",
+      "bytes": 2097152,
+      "sha256": "49f947170fae0702acd5c090fc5b98fbe15b3c0830447dca8e70e8c166c16055"
+    },
+    {
+      "file": "temple-006-8a7c2977b718.bin",
+      "bytes": 2097152,
+      "sha256": "8a7c2977b7184aa701ffce107312eb88e211e9c7349878c920183a59e9a1027e"
+    },
+    {
+      "file": "temple-007-bd5d91ec6096.bin",
+      "bytes": 2097152,
+      "sha256": "bd5d91ec60964c7411cb12e2997849f29c2f92f8f8cf48b51974382ad8e93f8d"
+    },
+    {
+      "file": "temple-008-0f5be9e1d940.bin",
+      "bytes": 2097152,
+      "sha256": "0f5be9e1d94086a7e3161ea3c36e97f0951f64d3103f1e6ff6c0422a61f3e36f"
+    },
+    {
+      "file": "temple-009-e6d4ef4b68af.bin",
+      "bytes": 2097152,
+      "sha256": "e6d4ef4b68affca51a027d4e5aa58e95fb5dc67e193c1be9cfb7d39b6c37df54"
+    },
+    {
+      "file": "temple-010-b43cc5d28c15.bin",
+      "bytes": 2097152,
+      "sha256": "b43cc5d28c15aa668c5157803eeae6dba5810a0ea9be298e907fc19337c11f58"
+    },
+    {
+      "file": "temple-011-95ae890b5bb5.bin",
+      "bytes": 2066157,
+      "sha256": "95ae890b5bb5c766125611762751a00ce2d142780ba221a20a37ae0a259515c7"
+    }
+  ],
+  "compression": "gzip",
+  "uncompressedBytes": 32985136,
+  "decodedSha256": "f026ccdabbea096f6a68de324034dc257bd3af742a0bde2068f2eee6dd863ea3"
+}

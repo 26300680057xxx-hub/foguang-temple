@@ -1,4 +1,4 @@
-import { loadChunkedGltf } from './chunked-model-loader.js';
+import { loadChunkedGltf } from './chunked-model-loader.js?v=20261112';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -16,6 +16,7 @@ camera.position.set(44, 31, 61);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
 const compactDevice = matchMedia('(max-width: 720px)').matches;
 const mobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && matchMedia('(pointer: coarse)').matches);
+const originalDetail = new URLSearchParams(location.search).get('detail') === 'original';
 let smoothQuality = mobileDevice || compactDevice;
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smoothQuality ? 1 : 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -96,6 +97,9 @@ contact.rotation.x = -Math.PI / 2;
 scene.add(contact);
 
 let model = null;
+let modelReady = false;
+let modelLoading = false;
+let firstModelFrame = false;
 let pickMode = false;
 let selected = null;
 let selectedMaterial = null;
@@ -162,11 +166,17 @@ function setLayer(layer, visible) {
 }
 
 function loadModel() {
+  if (modelLoading) return;
+  modelLoading = true;
+  loading.classList.remove('failed');
+  loadingText.onclick = null;
+  loadingText.style.cursor = '';
+  document.dispatchEvent(new Event('temple:loading'));
   loading.classList.remove('loaded');
   loading.removeAttribute('aria-hidden');
   const loader = new GLTFLoader();
   loader.setMeshoptDecoder(MeshoptDecoder);
-  loadChunkedGltf(loader, new URL(mobileDevice ? './model/mobile/manifest.json' : './model/manifest.json', import.meta.url), async gltf => {
+  loadChunkedGltf(loader, new URL(originalDetail ? './model/manifest.json' : (typeof globalThis.DecompressionStream === 'function' ? './model/fast/manifest.json' : './model/fast/raw/manifest.json'), import.meta.url), async gltf => {
     model = gltf.scene;
     model.name = '佛光寺东大殿 · 可探索模型';
     scene.add(model);
@@ -191,7 +201,7 @@ function loadModel() {
       }
     });
     let batching = null;
-    if (mobileDevice || compactDevice) {
+    if (!originalDetail || mobileDevice || compactDevice) {
       loadingText.textContent = '正在准备流畅展示…';
       batching = await batchStaticMeshes(model);
       model.userData.renderBatching = batching;
@@ -213,18 +223,41 @@ function loadModel() {
     contact.scale.set(size.x * 1.65, size.z * 1.8, 1);
     updateShadows();
     loadingText.textContent = '殿堂与彩塑已就位'; loadingFill.style.width = '100%';
-    setTimeout(() => { loading.classList.add('loaded'); loading.setAttribute('aria-hidden', 'true'); }, 500);
+    modelReady = true; modelLoading = false;
+    // Respect controls used while the download was still in progress.
+    $$('input[data-layer]').forEach(i => setLayer(i.dataset.layer, i.checked));
+    if (doorOpen) animateDoor(true);
     requestRender();
   }, xhr => {
     const p = xhr.total ? xhr.loaded / xhr.total * 100 : 0;
-    loadingText.textContent = p ? `正在展开殿堂… ${Math.round(p)}%` : '正在载入殿堂与彩塑…';
+    const size = xhr.total ? ` · ${(xhr.loaded/1000000).toFixed(1)} / ${(xhr.total/1000000).toFixed(1)} MB` : '';
+    loadingText.textContent = xhr.phase === 'decode' ? '下载完成，正在展开三维殿堂…' : xhr.phase === 'retry' ? '连接波动，正在自动重试…' : p ? `载入三维 · ${Math.round(p)}%${size}` : '正在载入殿堂与彩塑…';
     loadingFill.style.width = `${Math.max(4, p)}%`;
-  }, () => {
+  }, error => {
+    modelLoading = false; modelReady = false;
+    if (model) {
+      model.removeFromParent();
+      const geometries = new Set(), materials = new Set(), textures = new Set();
+      model.traverse(o => { if (o.geometry) geometries.add(o.geometry); (Array.isArray(o.material) ? o.material : [o.material]).filter(Boolean).forEach(m => { materials.add(m); Object.values(m).forEach(v => { if (v?.isTexture) textures.add(v); }); }); });
+      geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
+      model = null; doorParts = [];
+    }
+    loading.classList.add('failed');
+    document.dispatchEvent(new CustomEvent('temple:error', { detail: error?.message }));
     loadingText.textContent = '载入暂未完成，点击此处重试'; loadingText.style.cursor = 'pointer'; loadingText.onclick = () => { loadingText.onclick = null; loadingText.style.cursor = ''; loadModel(); }; loadingFill.style.width = '20%';
     showToast('模型暂时不可用');
   });
 }
+document.addEventListener('temple:retry', loadModel);
 loadModel();
+
+const modelDetail = $('#model-detail');
+modelDetail.value = originalDetail ? 'original' : 'fast';
+modelDetail.addEventListener('change', () => {
+  const url = new URL(location.href);
+  if (modelDetail.value === 'original') url.searchParams.set('detail', 'original'); else url.searchParams.delete('detail');
+  location.assign(url);
+});
 
 const lightingLooks = {
   daylight: { sky: 1.35, key: 2.6, fill: .9, rim: 1.15, exposure: 1.08, color: 0xffeed7, environment: .32 },
@@ -416,7 +449,14 @@ function renderLoop(now) {
   if (renderLoop.doorsMoving && !doorsMoving) updateShadows();
   renderLoop.doorsMoving = doorsMoving;
   if (controls.enabled) controls.update();
-  if (active || frameRequested) { renderer.render(scene, camera); frameRequested = false; }
+  if (modelReady && (active || frameRequested)) {
+    renderer.render(scene, camera); frameRequested = false;
+    if (!firstModelFrame) {
+      firstModelFrame = true; sceneHost.classList.add('model-ready');
+      loading.classList.add('loaded'); loading.setAttribute('aria-hidden', 'true');
+      document.dispatchEvent(new Event('temple:ready'));
+    }
+  }
   requestAnimationFrame(renderLoop);
 }
 requestAnimationFrame(renderLoop);

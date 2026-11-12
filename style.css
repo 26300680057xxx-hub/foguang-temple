@@ -195,3 +195,25 @@ select:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
   #music-status, .music-volume { font-size: 8px; }
 }
 @media (max-width:370px) { nav { gap: 7px; } .brand { gap: 4px; } .brand svg { width: 23px; } .music-toggle { padding-inline: 5px; } }
+
+/* The lightweight preview is visible before WebGL or any model bytes arrive. */
+#scene { overflow: hidden; }
+#scene-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; opacity: 1; transition: opacity .35s; }
+#scene canvas { position: relative; opacity: 0; transition: opacity .35s; }
+#scene.model-ready canvas { opacity: 1; }
+#scene.model-ready #scene-preview { opacity: 0; visibility: hidden; }
+#loading { position: fixed; inset: auto auto 112px calc(28% + 30px); transform: none; min-width: 0; width: 340px; max-width: calc(100vw - 40px); padding: 18px 22px; background: #faf5eaf2; border: 1px solid #c9b99480; border-radius: 3px; box-shadow: 0 8px 32px #493a2312; backdrop-filter: blur(8px); z-index: 9; display: block; text-align: left; }
+#loading h3 { font: 16px/1.5 var(--serif); margin: 0 20px 8px 0; letter-spacing: 1px; }
+#loading p { font-size: 10px; line-height: 1.8; margin: 0 0 9px; color: var(--muted); }
+#loading small { font-size: 9px; line-height: 1.7; color: var(--muted); }
+#loading .loading-track { width: 100%; height: 2px; margin: 10px 0; }
+#dismiss-loading { position: absolute; top: 8px; right: 8px; font-size: 18px; padding: 0 7px; color: var(--muted); }
+#retry-model { display: block; font-size: 11px; margin-top: 10px; color: var(--red); padding: 7px 12px; border: 1px solid var(--line); }
+.immersive #loading { left: 30px; }
+#model-detail { max-width: 136px; font: inherit; font-size: 9px; color: var(--ink); background: #fcf8ed; border: 1px solid var(--line); padding: 6px 3px; }
+@media (max-width:720px) {
+  #loading, .immersive #loading { left: 20px; bottom: 156px; width: calc(100vw - 40px); padding: 13px 17px; }
+  #loading h3 { font-size: 13px; margin-bottom: 5px; }
+  #loading p { margin-bottom: 5px; }
+  #model-detail { max-width: 100px; font-size: 8px; }
+}
