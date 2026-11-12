@@ -83,5 +83,8 @@
       "bytes": 1527856,
       "sha256": "232cea6b1b4e26e80fa9e15f9080b7d8b880cf5153d98e24937cdd4072791862"
     }
+  ],
+  "mirrors": [
+    "https://cdn.jsdelivr.net/gh/26300680057xxx-hub/foguang-temple@7e9debf2a37b88126a43be877b67468f4489f1d2/model/fast/raw/"
   ]
 }

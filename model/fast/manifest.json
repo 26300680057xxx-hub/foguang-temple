@@ -61,5 +61,8 @@
   ],
   "compression": "gzip",
   "uncompressedBytes": 32985136,
-  "decodedSha256": "f026ccdabbea096f6a68de324034dc257bd3af742a0bde2068f2eee6dd863ea3"
+  "decodedSha256": "f026ccdabbea096f6a68de324034dc257bd3af742a0bde2068f2eee6dd863ea3",
+  "mirrors": [
+    "https://cdn.jsdelivr.net/gh/26300680057xxx-hub/foguang-temple@7e9debf2a37b88126a43be877b67468f4489f1d2/model/fast/"
+  ]
 }
